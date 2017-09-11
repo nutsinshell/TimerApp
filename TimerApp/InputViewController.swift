@@ -20,6 +20,8 @@ class InputViewController: UIViewController, UITableViewDelegate, UITableViewDat
     // 日付近い順\順でソート：降順
     // 以降内容をアップデートするとリスト内は自動的に更新される。
     
+   
+
     var taskArray = try! Realm().objects(MemoTask.self).sorted(byKeyPath: "displayTime", ascending: true)
     
         override func viewDidLoad() {
@@ -31,7 +33,6 @@ class InputViewController: UIViewController, UITableViewDelegate, UITableViewDat
     
         
     self.timeTextField.keyboardType = UIKeyboardType.numberPad
-        
        titleTextField.text = task.title
        timeTextField.text = task.time
     }
@@ -49,13 +50,20 @@ class InputViewController: UIViewController, UITableViewDelegate, UITableViewDat
     
 
     override func viewWillDisappear(_ animated: Bool) {
+        taskWrite()
+        
+        super.viewWillDisappear(animated)
+    }
+    
+    
+    func taskWrite(){
+        
         try! realm.write {
             self.task.title = self.titleTextField.text!
             self.task.time = self.timeTextField.text!
             self.realm.add(self.task, update: true)
         }
         
-        super.viewWillDisappear(animated)
     }
     
 //    ここからメモテーブルのために追加
@@ -109,10 +117,14 @@ class InputViewController: UIViewController, UITableViewDelegate, UITableViewDat
         if segue.identifier == "cellSegue2" {
             let memoViewController = segue.destination as! MemoViewController
             let indexPath = self.memoTableView.indexPathForSelectedRow
+            
+//            memoViewController.taskArray = taskArray
             memoViewController.memoTask = taskArray[indexPath!.row]
+            //InputViewからMemoViewに遷移するときにtaskArrayを渡してあげる
         }
-        if segue.identifier == "segueForTimer"{
+        else if segue.identifier == "segueForTimer"{
             let timerViewController = segue.destination as! TimerViewController
+            timerViewController.memoTaskArray = taskArray
             timerViewController.titleStr = titleTextField.text!
             timerViewController.timeStr = timeTextField.text!
         }
@@ -128,30 +140,8 @@ class InputViewController: UIViewController, UITableViewDelegate, UITableViewDat
             let memoViewController = segue.destination as! MemoViewController
             memoViewController.memoTask = memoTask
         }
-
-        
-        
-        
-//        if segue.identifier == "cellSegue2" {
-//            let indexPath = self.memoTableView.indexPathForSelectedRow
-//            memoViewController.memoTask = taskArray[indexPath!.row]
-//        } else {
-//            let memoTask = MemoTask()
-//            memoTask.displayTime = String()
-//            let allMemos = realm.objects(MemoTask.self)
-//            if allMemos.count != 0 {
-//            memoTask.memoId = allMemos.max(ofProperty: "memoId")! + 1
-//                
-//            }
-//            memoTask.taskId = task.id
-//            
-//            memoViewController.memoTask = memoTask
-//            
-//        }
-//
-        
-        
-    }
+}
+    
     // 入力画面から戻ってきた時に TableView を更新させる
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)

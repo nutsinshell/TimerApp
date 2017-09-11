@@ -6,14 +6,16 @@ class TimerViewController: UIViewController {
     
     
     @IBOutlet weak var timerTitle: UILabel!
-    
     @IBOutlet weak var timerTime: UILabel!
+    @IBOutlet weak var timerMemo: UITextView!
+    
     
     let realm = try! Realm()
     
     var labelInput = try! Realm().objects(Task.self).sorted(byKeyPath: "id", ascending: false)
     
 //    タイトルと時間を受け取るための変数
+    var task: Task!
     var titleStr = ""
     var timeStr = ""
     
@@ -22,7 +24,14 @@ class TimerViewController: UIViewController {
     var myLabel : UILabel!
     var timer: Timer!
     
-    
+//    メモを呼び出す用
+//    var memoTaskArray : Results<MemoTask>?
+    var memoTaskArray = try! Realm().objects(MemoTask.self).sorted(byKeyPath: "memoId")
+//    TaskArrayに一覧をもらう。indexもつけなきゃいけない？
+    var memoTime = ""
+//    メモの表示時間
+    var index = 0
+   
     override func viewDidLoad() {
         super.viewDidLoad()
         // ラベルを作る
@@ -43,7 +52,12 @@ class TimerViewController: UIViewController {
         timerTitle.text = titleStr
         timerTime.text = timeStr
         
+        if memoTaskArray.count > 0 {
+        memoTime = memoTaskArray[index].displayTime
         }
+        //初期値の設定 `memoTaskArray` が空じゃないときだけアクセスする
+        
+    }
     
     
     @IBAction func startTimer(_ sender: Any) {
@@ -65,14 +79,25 @@ class TimerViewController: UIViewController {
    
     
     @IBAction func resetTimer(_ sender: Any) {
-        // リセットボタンを押すと、タイマーの時間を0に
+        // リセットボタンを押すと、タイマーの時間を0に＆メモもリセット
         self.count = 0
         self.myLabel.text = String("00:00:00")
+        self.memoTaskArray = try! Realm().objects(MemoTask.self).sorted(byKeyPath: "memoId")
+        index = 0
+        timerMemo.text = "ここにメモが表示されます"
+        let nextMemoTask = memoTaskArray[index]
+        //次の表示時間をセットして上書き
+        memoTime = nextMemoTask.displayTime
+
+        
+        
         if self.timer != nil {
             self.timer.invalidate()
             // 現在のタイマーを破棄する
             self.timer = nil
             // startTimer() の timer == nil で判断するために、 timer = nil としておく
+            
+            
 
         }
     }
@@ -86,9 +111,20 @@ class TimerViewController: UIViewController {
         // %02d： ２桁表示、0で埋める
         let totalTimeString = String(format: "%02d:%02d:%02d",hour, minute, second)
         myLabel.text = totalTimeString;
-        /*if(currentTime > time) {
-         
-         }*/
+                
+        
+        if let memoTimeValue = Int(memoTime), memoTimeValue <= second {
+            if index < memoTaskArray.count {
+                let memoTask = memoTaskArray[index]
+                timerMemo.text = memoTask.displayMemo
+            }
+            index += 1
+            if index < memoTaskArray.count {
+                let nextMemoTask = memoTaskArray[index]
+                //次の表示時間をセットして上書き
+                memoTime = nextMemoTask.displayTime
+            }
+        }
     }
     
     
