@@ -1,0 +1,20 @@
+PODS:
+  - Realm (2.6.2):
+    - Realm/Headers (= 2.6.2)
+  - Realm/Headers (2.6.2)
+  - RealmSwift (2.6.2):
+    - Realm (= 2.6.2)
+  - SVProgressHUD (2.1.2)
+
+DEPENDENCIES:
+  - RealmSwift (= 2.6.2)
+  - SVProgressHUD
+
+SPEC CHECKSUMS:
+  Realm: 29222766425b9f831228f81b63f0e38a97a4d700
+  RealmSwift: d161a80f96cb91ae88391a7d5a9cf08024a7bc8e
+  SVProgressHUD: c404a55d78acbeb7ebb78b76d3faf986475a6994
+
+PODFILE CHECKSUM: 4105dab2a7495e2da805bbaf2ad0810187610344
+
+COCOAPODS: 1.1.1

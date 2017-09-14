@@ -43,8 +43,10 @@ class MemoTask: Object {
     // 時間
     dynamic var displayTime = ""
     
+    
     // メモ
     dynamic var displayMemo = ""
+    
     
     
     
@@ -54,8 +56,10 @@ class MemoTask: Object {
     override static func primaryKey() -> String? {
         return "memoId"
         
-        
-        
     }
+//    
+//    func numberDesuka(s: String) -> Bool {
+//        return Int(s) != nil
+//            }
 }
 

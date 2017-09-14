@@ -10,31 +10,26 @@ class InputViewController: UIViewController, UITableViewDelegate, UITableViewDat
     @IBOutlet weak var timeTextField: UITextField!
     @IBOutlet weak var memoTableView: UITableView!
     
-   
+    
     var task: Task!
     var memoTask:MemoTask!
     let realm = try! Realm()
     
     
-    // DB内のタスクが格納されるリスト。
-    // 日付近い順\順でソート：降順
-    // 以降内容をアップデートするとリスト内は自動的に更新される。
     
-   
-
     var taskArray = try! Realm().objects(MemoTask.self).sorted(byKeyPath: "displayTime", ascending: true)
     
-        override func viewDidLoad() {
+    override func viewDidLoad() {
         super.viewDidLoad()
         
         memoTableView.delegate = self
         memoTableView.dataSource = self
         memoTableView.keyboardDismissMode = .interactive
-    
         
-    self.timeTextField.keyboardType = UIKeyboardType.numberPad
-       titleTextField.text = task.title
-       timeTextField.text = task.time
+        
+        self.timeTextField.keyboardType = UIKeyboardType.numberPad
+        titleTextField.text = task.title
+        timeTextField.text = task.time
     }
     
     
@@ -42,13 +37,13 @@ class InputViewController: UIViewController, UITableViewDelegate, UITableViewDat
         // キーボードを閉じる
         view.endEditing(true)
     }
-
+    
     override func didReceiveMemoryWarning() {
         super.didReceiveMemoryWarning()
         // Dispose of any resources that can be recreated.
     }
     
-
+    
     override func viewWillDisappear(_ animated: Bool) {
         taskWrite()
         
@@ -66,7 +61,7 @@ class InputViewController: UIViewController, UITableViewDelegate, UITableViewDat
         
     }
     
-//    ここからメモテーブルのために追加
+    //    ここからメモテーブルのために追加
     
     // データの数（＝セルの数）を返すメソッド
     func tableView(_ memoTableView: UITableView, numberOfRowsInSection section: Int) -> Int {
@@ -80,14 +75,14 @@ class InputViewController: UIViewController, UITableViewDelegate, UITableViewDat
         let memo = taskArray[indexPath.row]
         cell.detailTextLabel?.text = memo.displayMemo
         cell.textLabel?.text = (memo.displayTime) + ("min : ")
-
+        
         return cell
     }
     
-   
     
     
-//    セルタップで遷移
+    
+    //    セルタップで遷移
     func tableView(_ memoTableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         
         performSegue(withIdentifier: "cellSegue2",sender: nil)
@@ -108,17 +103,17 @@ class InputViewController: UIViewController, UITableViewDelegate, UITableViewDat
             }
         }
     }
-
+    
     override func prepare(for segue: UIStoryboardSegue, sender: Any?){
-//        let memoViewController:MemoViewController = segue.destination as! MemoViewController
-//        
+        //        let memoViewController:MemoViewController = segue.destination as! MemoViewController
+        //
         
         
         if segue.identifier == "cellSegue2" {
             let memoViewController = segue.destination as! MemoViewController
             let indexPath = self.memoTableView.indexPathForSelectedRow
             
-//            memoViewController.taskArray = taskArray
+            //            memoViewController.taskArray = taskArray
             memoViewController.memoTask = taskArray[indexPath!.row]
             //InputViewからMemoViewに遷移するときにtaskArrayを渡してあげる
         }
@@ -134,21 +129,25 @@ class InputViewController: UIViewController, UITableViewDelegate, UITableViewDat
             let allMemos = realm.objects(MemoTask.self)
             if allMemos.count != 0 {
                 memoTask.memoId = allMemos.max(ofProperty: "memoId")! + 1
-            
+                
             }
             memoTask.taskId = task.id
             let memoViewController = segue.destination as! MemoViewController
             memoViewController.memoTask = memoTask
         }
-}
+    }
     
     // 入力画面から戻ってきた時に TableView を更新させる
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         
-    taskArray = try! Realm().objects(MemoTask.self).sorted(byKeyPath: "displayTime", ascending: true).filter("taskId= %ld", task.id)
+        taskArray = try! Realm().objects(MemoTask.self).sorted(byKeyPath: "displayTime", ascending: true).filter("taskId= %ld", task.id)
         memoTableView.reloadData()
     }
-
+    
     
 }
+
+
+
+
