@@ -41,7 +41,7 @@ class MemoTask: Object {
     
     
     // 時間
-    dynamic var displayTime = ""
+    dynamic var displayTime = 0
     
     
     // メモ

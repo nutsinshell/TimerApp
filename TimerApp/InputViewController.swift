@@ -74,7 +74,7 @@ class InputViewController: UIViewController, UITableViewDelegate, UITableViewDat
         let cell = memoTableView.dequeueReusableCell(withIdentifier: "Cell", for: indexPath)
         let memo = taskArray[indexPath.row]
         cell.detailTextLabel?.text = memo.displayMemo
-        cell.textLabel?.text = (memo.displayTime) + ("min : ")
+        cell.textLabel?.text = "\(memo.displayTime)" + "min : "
         
         return cell
     }
@@ -125,7 +125,7 @@ class InputViewController: UIViewController, UITableViewDelegate, UITableViewDat
         }
         else{
             let memoTask = MemoTask()
-            memoTask.displayTime = String()
+            memoTask.displayTime = Int()
             let allMemos = realm.objects(MemoTask.self)
             if allMemos.count != 0 {
                 memoTask.memoId = allMemos.max(ofProperty: "memoId")! + 1

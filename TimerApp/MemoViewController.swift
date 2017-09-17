@@ -22,7 +22,7 @@ class MemoViewController: UIViewController, UITextFieldDelegate {
         self.view.addGestureRecognizer(tapGesture)
         
         displayTime.delegate = self
-        displayTime.text = memoTask.displayTime
+        displayTime.text = "\(memoTask.displayTime)"
         displayMemo.text = memoTask.displayMemo
         
         self.displayTime.keyboardType = UIKeyboardType.numberPad
@@ -50,7 +50,7 @@ class MemoViewController: UIViewController, UITextFieldDelegate {
                 continue
             }
             
-            if memoTask.displayTime == displayTime {
+            if memoTask.displayTime == Int(displayTime) {
                 print("テスト")
                 SVProgressHUD.showError(withStatus: "その時間はすでに登録されています。")
                 return
@@ -58,7 +58,7 @@ class MemoViewController: UIViewController, UITextFieldDelegate {
             
         }
         try! realm.write {
-            self.memoTask.displayTime = displayTime
+            self.memoTask.displayTime = Int(displayTime)!
             self.memoTask.displayMemo = displayMemo
             self.realm.add(self.memoTask, update: true)
         }

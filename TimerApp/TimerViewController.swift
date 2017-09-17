@@ -50,10 +50,11 @@ class TimerViewController: UIViewController {
         self.view.addSubview(myLabel)
         
         timerTitle.text = titleStr
-        timerTime.text = timeStr
+        timerTime.text = "total " + String(timeStr) + " min"
+
         
         if memoTaskArray.count > 0 {
-        memoTime = memoTaskArray[index].displayTime
+        memoTime = String(memoTaskArray[index].displayTime)
         }
         //初期値の設定 `memoTaskArray` が空じゃないときだけアクセスする
         
@@ -87,7 +88,7 @@ class TimerViewController: UIViewController {
         timerMemo.text = "ここにメモが表示されます"
         let nextMemoTask = memoTaskArray[index]
         //次の表示時間をセットして上書き
-        memoTime = nextMemoTask.displayTime
+        memoTime = String(nextMemoTask.displayTime)
 
         
         
@@ -122,7 +123,7 @@ class TimerViewController: UIViewController {
             if index < memoTaskArray.count {
                 let nextMemoTask = memoTaskArray[index]
                 //次の表示時間をセットして上書き
-                memoTime = nextMemoTask.displayTime
+                memoTime = String(nextMemoTask.displayTime)
             }
         }
     }
@@ -139,6 +140,3 @@ class TimerViewController: UIViewController {
     
 }
 
-
-
-//私の
