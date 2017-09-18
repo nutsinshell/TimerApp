@@ -40,7 +40,7 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
         // Cellに値を設定する.
         let task = taskArray[indexPath.row]
         cell.textLabel?.text = task.title
-        cell.detailTextLabel?.text = ("【") + (task.time) + ("min】")
+        cell.detailTextLabel?.text = ("【total ") + (task.time) + (" min】")
         return cell
     }
     // MARK: UITableViewDelegateプロトコルのメソッド

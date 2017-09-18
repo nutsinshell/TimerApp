@@ -14,24 +14,24 @@ class TimerViewController: UIViewController {
     
     var labelInput = try! Realm().objects(Task.self).sorted(byKeyPath: "id", ascending: false)
     
-//    タイトルと時間を受け取るための変数
+    //    タイトルと時間を受け取るための変数
     var task: Task!
     var titleStr = ""
     var timeStr = ""
     
-//    タイマー用の変数やラベルなど
+    //    タイマー用の変数やラベルなど
     var count : Float = 0
     var myLabel : UILabel!
     var timer: Timer!
     
-//    メモを呼び出す用
-//    var memoTaskArray : Results<MemoTask>?
+    //    メモを呼び出す用
+    //    var memoTaskArray : Results<MemoTask>?
     var memoTaskArray = try! Realm().objects(MemoTask.self).sorted(byKeyPath: "memoId")
-//    TaskArrayに一覧をもらう。indexもつけなきゃいけない？
+    //    TaskArrayに一覧をもらう。indexもつけなきゃいけない？
     var memoTime = ""
-//    メモの表示時間
+    //    メモの表示時間
     var index = 0
-   
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         // ラベルを作る
@@ -51,10 +51,10 @@ class TimerViewController: UIViewController {
         
         timerTitle.text = titleStr
         timerTime.text = "total " + String(timeStr) + " min"
-
+        
         
         if memoTaskArray.count > 0 {
-        memoTime = String(memoTaskArray[index].displayTime)
+            memoTime = String(memoTaskArray[index].displayTime)
         }
         //初期値の設定 `memoTaskArray` が空じゃないときだけアクセスする
         
@@ -63,21 +63,21 @@ class TimerViewController: UIViewController {
     
     @IBAction func startTimer(_ sender: Any) {
         if self.timer == nil {
-        // タイマーを作る
-        self.timer = Timer.scheduledTimer(timeInterval: 1, target: self, selector: #selector(TimerViewController.onUpdate(timer:)), userInfo: nil, repeats: true)
-        // タイマーが開始された日時
+            // タイマーを作る
+            self.timer = Timer.scheduledTimer(timeInterval: 1, target: self, selector: #selector(TimerViewController.onUpdate(timer:)), userInfo: nil, repeats: true)
+            // タイマーが開始された日時
         }
     }
     
     @IBAction func pauseTimer(_ sender: Any) {
         if self.timer != nil {
-        // タイマーを破棄
-        self.timer.invalidate()
-        self.timer = nil
+            // タイマーを破棄
+            self.timer.invalidate()
+            self.timer = nil
         }
     }
-        
-   
+    
+    
     
     @IBAction func resetTimer(_ sender: Any) {
         // リセットボタンを押すと、タイマーの時間を0に＆メモもリセット
@@ -89,7 +89,7 @@ class TimerViewController: UIViewController {
         let nextMemoTask = memoTaskArray[index]
         //次の表示時間をセットして上書き
         memoTime = String(nextMemoTask.displayTime)
-
+        
         
         
         if self.timer != nil {
@@ -99,7 +99,7 @@ class TimerViewController: UIViewController {
             // startTimer() の timer == nil で判断するために、 timer = nil としておく
             
             
-
+            
         }
     }
     
@@ -111,10 +111,14 @@ class TimerViewController: UIViewController {
         let second = Int(count) % 60
         // %02d： ２桁表示、0で埋める
         let totalTimeString = String(format: "%02d:%02d:%02d",hour, minute, second)
-        myLabel.text = totalTimeString;
-                
         
-        if let memoTimeValue = Int(memoTime), memoTimeValue <= second {
+        myLabel.text = totalTimeString;
+        
+        
+        let totalCountInMinutes = Int(count) // Int(count / 60)
+        
+        
+        if let memoTimeValue = Int(memoTime), memoTimeValue <= totalCountInMinutes {
             if index < memoTaskArray.count {
                 let memoTask = memoTaskArray[index]
                 timerMemo.text = memoTask.displayMemo
@@ -124,6 +128,15 @@ class TimerViewController: UIViewController {
                 let nextMemoTask = memoTaskArray[index]
                 //次の表示時間をセットして上書き
                 memoTime = String(nextMemoTask.displayTime)
+            }
+            
+        //  60秒を超えた時の表示
+            
+            let newMinute = Int(Int(memoTime)! / 60)
+            if (newMinute > 1) &&  (minute == newMinute){
+                let newSecond = Int(Int(memoTime)! % 60)
+                memoTime = String(newSecond)
+
             }
         }
     }
@@ -136,7 +149,7 @@ class TimerViewController: UIViewController {
         count += 1
         timerCounter(timer: timer)
     }
-
+    
     
 }
 
