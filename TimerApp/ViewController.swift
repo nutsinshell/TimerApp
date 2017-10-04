@@ -14,7 +14,7 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
     // DB内のタスクが格納されるリスト。
     // 日付近い順\順でソート：降順
     // 以降内容をアップデートするとリスト内は自動的に更新される。
-    var taskArray = try! Realm().objects(Task.self).sorted(byKeyPath: "id", ascending: false)
+    var taskArray = try! Realm().objects(Task.self).sorted(byKeyPath: "updatedAt", ascending:false)
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -40,7 +40,7 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
         // Cellに値を設定する.
         let task = taskArray[indexPath.row]
         cell.textLabel?.text = task.title
-        cell.detailTextLabel?.text = ("【total ") + (task.time) + (" min】")
+        cell.detailTextLabel?.text = ("【total \(task.time) min】")
         return cell
     }
     // MARK: UITableViewDelegateプロトコルのメソッド
@@ -73,7 +73,7 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
             inputViewController.task = taskArray[indexPath!.row]
         } else {
             let task = Task()
-            task.time = ""
+            task.time = 0
             
             if taskArray.count != 0 {
                 task.id = taskArray.max(ofProperty: "id")! + 1

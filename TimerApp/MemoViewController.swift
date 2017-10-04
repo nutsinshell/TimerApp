@@ -10,9 +10,16 @@ class MemoViewController: UIViewController, UITextFieldDelegate {
     
     
     let realm = try! Realm()
+    var isNew:Bool = true
+    var maxTime:Int = 0
+    
     var memoTask:MemoTask!
-    var taskArray = try! Realm().objects(MemoTask.self)
-    //    MemoViewControllerでtaskArrayを使うために、Realmからデータをもらい、InputViewControlelrから遷移するときにtaskArrayをもらう
+    var memoTasks = try! Realm().objects(MemoTask.self)
+    //    MemoViewControllerでmemoTasksを使うために、Realmからデータをもらい、InputViewControllerから遷移するときにmemoTasksをもらう
+    
+    
+    
+    
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -27,14 +34,11 @@ class MemoViewController: UIViewController, UITextFieldDelegate {
         
         self.displayTime.keyboardType = UIKeyboardType.numberPad
         
+        print(maxTime)
     }
     
     
     @IBAction func saveButton(_ sender: UIButton) {
-        
-//            self.memoTask.displayTime = self.displayTime.text!
-//            self.memoTask.displayMemo = self.displayMemo.text
-        
         let displayTime = self.displayTime.text!
         let displayMemo = self.displayMemo.text!
         
@@ -44,19 +48,22 @@ class MemoViewController: UIViewController, UITextFieldDelegate {
             return
         }
         
-        for memoTask  in taskArray {
-            
-            if memoTask.memoId == self.memoTask.memoId {
-                continue
+        for memo in memoTasks {
+            if memo.taskId == memoTask.taskId {
+                if memo.displayTime == Int(displayTime) && isNew {
+                    print("テスト")
+                    SVProgressHUD.showError(withStatus: "その時間はすでに登録されています。")
+                    return
+                }
             }
-            
-            if memoTask.displayTime == Int(displayTime) {
-                print("テスト")
-                SVProgressHUD.showError(withStatus: "その時間はすでに登録されています。")
-                return
-            }
-            
         }
+        
+        if Int(displayTime)! > maxTime {
+            print("テスト")
+            SVProgressHUD.showError(withStatus: "所要時間より先のメモは登録できません。")
+            return
+        }
+        
         try! realm.write {
             self.memoTask.displayTime = Int(displayTime)!
             self.memoTask.displayMemo = displayMemo
@@ -66,7 +73,7 @@ class MemoViewController: UIViewController, UITextFieldDelegate {
         SVProgressHUD.showSuccess(withStatus: "保存しました")
         self.navigationController?.popViewController(animated : true)
     //        一つ前に戻る（rootに戻るとかインデックスを指定して戻るやり方もある）
-        
+
     }
     
     

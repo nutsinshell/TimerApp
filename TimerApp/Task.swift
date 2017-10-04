@@ -1,10 +1,3 @@
-//
-//  Task.swift
-//  
-//
-//  Created by Mizuki on 2017/08/14.
-//
-//
 
 import Foundation
 import RealmSwift
@@ -17,13 +10,17 @@ class Task: Object {
     dynamic var title = ""
     
     // 時間
-    dynamic var time = ""
+    dynamic var time = 0
     
     // メモ
     dynamic var memo = ""
     
-    
 
+    dynamic var createdAt = NSDate()    //作成日時
+    dynamic var updatedAt = NSDate()    //更新日時
+    
+    
+    
     /**
      id をプライマリーキーとして設定
      */
@@ -37,7 +34,7 @@ class MemoTask: Object {
     dynamic var memoId = 0
     
     dynamic var taskId = 0
-//    タスクと紐付けるID
+    // タスクと紐付けるID
     
     
     // 時間
@@ -57,9 +54,9 @@ class MemoTask: Object {
         return "memoId"
         
     }
-//    
-//    func numberDesuka(s: String) -> Bool {
-//        return Int(s) != nil
-//            }
+    //
+    //    func numberDesuka(s: String) -> Bool {
+    //        return Int(s) != nil
+    //            }
 }
 

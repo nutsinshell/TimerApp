@@ -2,12 +2,15 @@
 import UIKit
 import RealmSwift
 
-class TimerViewController: UIViewController {
+class TimerViewController: UIViewController,UITextFieldDelegate {
     
     
     @IBOutlet weak var timerTitle: UILabel!
     @IBOutlet weak var timerTime: UILabel!
     @IBOutlet weak var timerMemo: UITextView!
+    
+    @IBOutlet weak var startTimeInput: UITextField!
+    
     
     
     let realm = try! Realm()
@@ -31,6 +34,7 @@ class TimerViewController: UIViewController {
     var memoTime = ""
     //    メモの表示時間
     var index = 0
+    
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -58,31 +62,55 @@ class TimerViewController: UIViewController {
         }
         //初期値の設定 `memoTaskArray` が空じゃないときだけアクセスする
         
+        self.startTimeInput.keyboardType = UIKeyboardType.numberPad
+        
+        // 背景をタップしたらdismissKeyboardメソッドを呼ぶように設定する
+        let tapGesture: UITapGestureRecognizer = UITapGestureRecognizer(target:self, action:#selector(dismissKeyboard))
+        self.view.addGestureRecognizer(tapGesture)
     }
+    
     
     
     @IBAction func startTimer(_ sender: Any) {
-        if self.timer == nil {
+        if (count == 0) {
+            if let startTime = Int(startTimeInput.text!) {
+                self.count = Float(startTime)  //startTime! * 60
+                
+                self.memoTaskArray = try! Realm().objects(MemoTask.self).sorted(byKeyPath: "memoId").filter("displayTime >= %d", startTime)
+                
+                index = 0
+                memoTime = String(memoTaskArray[index].displayTime)
+            }
+        }
+        
+        if self.timer == nil{
             // タイマーを作る
-            self.timer = Timer.scheduledTimer(timeInterval: 1, target: self, selector: #selector(TimerViewController.onUpdate(timer:)), userInfo: nil, repeats: true)
-            // タイマーが開始された日時
+            self.timer = Timer.scheduledTimer(
+                timeInterval: 1,
+                target: self,
+                selector: #selector(TimerViewController.onUpdate(timer:)),
+                userInfo: nil,
+                repeats: true
+            )
         }
     }
+    
+
     
     @IBAction func pauseTimer(_ sender: Any) {
         if self.timer != nil {
             // タイマーを破棄
-            self.timer.invalidate()
-            self.timer = nil
+            self.timer.invalidate()      // 現在のタイマーを破棄する
+            self.timer = nil        // startTimer() の timer == nil で判断するために、 timer = nil としておく
         }
     }
-    
     
     
     @IBAction func resetTimer(_ sender: Any) {
         // リセットボタンを押すと、タイマーの時間を0に＆メモもリセット
         self.count = 0
         self.myLabel.text = String("00:00:00")
+        startTimeInput.text = ""
         self.memoTaskArray = try! Realm().objects(MemoTask.self).sorted(byKeyPath: "memoId")
         index = 0
         timerMemo.text = "ここにメモが表示されます"
@@ -90,16 +118,11 @@ class TimerViewController: UIViewController {
         //次の表示時間をセットして上書き
         memoTime = String(nextMemoTask.displayTime)
         
-        
-        
         if self.timer != nil {
             self.timer.invalidate()
             // 現在のタイマーを破棄する
             self.timer = nil
             // startTimer() の timer == nil で判断するために、 timer = nil としておく
-            
-            
-            
         }
     }
     
@@ -130,15 +153,20 @@ class TimerViewController: UIViewController {
                 memoTime = String(nextMemoTask.displayTime)
             }
             
-        //  60秒を超えた時の表示
+            
+            //  60秒を超えた時の表示
             
             let newMinute = Int(Int(memoTime)! / 60)
             if (newMinute > 1) &&  (minute == newMinute){
                 let newSecond = Int(Int(memoTime)! % 60)
                 memoTime = String(newSecond)
-
+                
             }
+            
         }
+        
+        
+        
     }
     
     
@@ -150,6 +178,9 @@ class TimerViewController: UIViewController {
         timerCounter(timer: timer)
     }
     
-    
+    func dismissKeyboard(){
+        // キーボードを閉じる
+        view.endEditing(true)
+    }
 }
 
