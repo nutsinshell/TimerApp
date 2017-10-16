@@ -4,6 +4,42 @@ import UIKit
 import RealmSwift
 import SVProgressHUD
 
+//UIデザインのために追加
+extension UIView {
+    @IBInspectable var cornerRadius: CGFloat {
+        get {
+            return layer.cornerRadius
+        }
+        set {
+            layer.cornerRadius = newValue
+            layer.masksToBounds = newValue > 0
+        }
+    }
+    
+    @IBInspectable
+    var borderWidth: CGFloat {
+        get {
+            return self.layer.borderWidth
+        }
+        set {
+            self.layer.borderWidth = newValue
+        }
+    }
+    
+    @IBInspectable
+    var borderColor: UIColor? {
+        get {
+            return UIColor(cgColor: self.layer.borderColor!)
+        }
+        set {
+            self.layer.borderColor = newValue?.cgColor
+        }
+    }
+    
+}
+
+//追加ここまで
+
 class InputViewController: UIViewController, UITableViewDelegate, UITableViewDataSource {
     
     
@@ -15,9 +51,6 @@ class InputViewController: UIViewController, UITableViewDelegate, UITableViewDat
     var task:Task!
     var memoTask:MemoTask!
     let realm = try! Realm()
-    
-    
-    
     
     
     var taskArray = try! Realm().objects(MemoTask.self).sorted(byKeyPath: "displayTime", ascending: true)
@@ -33,8 +66,11 @@ class InputViewController: UIViewController, UITableViewDelegate, UITableViewDat
         self.timeTextField.keyboardType = UIKeyboardType.numberPad
         titleTextField.text = task.title
         timeTextField.text = "\(task.time)"
+        
+//        if timeTextField.text == "0"{
+//            timeTextField.textColor = UIColor.red
+//    }
     }
-    
     
     func dismissKeyboard(){
         // キーボードを閉じる
@@ -47,18 +83,9 @@ class InputViewController: UIViewController, UITableViewDelegate, UITableViewDat
     }
     
     
-    override func viewWillDisappear(_ animated: Bool) {
-        taskWrite()
-        
-        super.viewWillDisappear(animated)
-    }
-    
-    
     
     func taskWrite(){
-        //        if (titleTextField.text != nil) || (timeTextField.text != nil)
-        
-        try! realm.write {
+            try! realm.write {
             self.task.title = self.titleTextField.text!
             self.task.time = Int(self.timeTextField.text!)!
             self.task.updatedAt = NSDate()
@@ -77,7 +104,7 @@ class InputViewController: UIViewController, UITableViewDelegate, UITableViewDat
             let displayTime = task.displayTime
             if Int(timeTextField.text!)! < displayTime {
                 print("テスト")
-                SVProgressHUD.showError(withStatus: "最後のメモより前の時間は登録できません。")
+                SVProgressHUD.showError(withStatus: "所要時間が最後のメモより短くなっています。")
                 return
             }
 //            取れなかったら比較ができないので遷移に移る
@@ -88,6 +115,14 @@ class InputViewController: UIViewController, UITableViewDelegate, UITableViewDat
     }
     
     
+    @IBAction func moveNewMemo(_ sender: Any) {
+        if timeTextField.text!.isEmpty || Int(timeTextField.text!) == 0  {
+            print("テスト")
+            SVProgressHUD.showError(withStatus: "所要時間を入力して下さい")
+            return
+        }
+        performSegue(withIdentifier: "newMemo",sender: nil)
+    }
     
     
     //    ここからメモテーブルのために追加
@@ -103,7 +138,7 @@ class InputViewController: UIViewController, UITableViewDelegate, UITableViewDat
         let cell = memoTableView.dequeueReusableCell(withIdentifier: "Cell", for: indexPath)
         let memo = taskArray[indexPath.row]
         cell.detailTextLabel?.text = memo.displayMemo
-        cell.textLabel?.text = "\(memo.displayTime)" + "min : "
+        cell.textLabel?.text = "\(memo.displayTime)" + "分目 : "
         
         return cell
     }
@@ -113,7 +148,6 @@ class InputViewController: UIViewController, UITableViewDelegate, UITableViewDat
     
     //    セルタップで遷移
     func tableView(_ memoTableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        
         performSegue(withIdentifier: "cellSegue2",sender: nil)
     }
     
@@ -150,16 +184,16 @@ class InputViewController: UIViewController, UITableViewDelegate, UITableViewDat
             let timerViewController = segue.destination as! TimerViewController
             timerViewController.memoTaskArray = taskArray
             timerViewController.titleStr = titleTextField.text!
-            timerViewController.timeStr = timeTextField.text!
+            timerViewController.timeStr = Int(timeTextField.text!)!
+            timerViewController.taskId = task.id
+            timerViewController.task = task
         }
         else{
             // new memo
-            
             let memoTask = MemoTask()
             memoTask.displayTime = Int()
             let allMemos = realm.objects(MemoTask.self)
             memoTask.memoId = allMemos.count + 1
-            
             memoTask.taskId = task.id
             
             let memoViewController = segue.destination as! MemoViewController
@@ -172,12 +206,13 @@ class InputViewController: UIViewController, UITableViewDelegate, UITableViewDat
             //            }
             
             memoViewController.maxTime = timeTextField.text == "" ? 0 : Int(timeTextField.text!)!
-            
-            
             memoViewController.isNew = true
         }
-        
     }
+    
+    
+    
+    
     //
     // 入力画面から戻ってきた時に TableView を更新させる
     override func viewWillAppear(_ animated: Bool) {
@@ -187,7 +222,18 @@ class InputViewController: UIViewController, UITableViewDelegate, UITableViewDat
         memoTableView.reloadData()
     }
     
+//    override func viewWillDisappear(_ animated: Bool) {
+//        taskWrite()
+//        super.viewWillDisappear(animated)
+//    }
     
+    override func viewWillDisappear(_ animated: Bool) {
+        super.viewWillDisappear(animated)
+
+        if !(titleTextField.text!.isEmpty) || Int(timeTextField.text!)! > 0 || taskArray.count > 0 {
+        self.taskWrite()
+            }
+   }
 }
 
 

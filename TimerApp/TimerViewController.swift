@@ -11,6 +11,7 @@ class TimerViewController: UIViewController,UITextFieldDelegate {
     
     @IBOutlet weak var startTimeInput: UITextField!
     
+    @IBOutlet weak var timerLabel: UILabel!
     
     
     let realm = try! Realm()
@@ -19,12 +20,15 @@ class TimerViewController: UIViewController,UITextFieldDelegate {
     
     //    タイトルと時間を受け取るための変数
     var task: Task!
+    var taskId = 0
+    
     var titleStr = ""
-    var timeStr = ""
+    var timeStr = 0
+    
     
     //    タイマー用の変数やラベルなど
     var count : Float = 0
-    var myLabel : UILabel!
+    //    var myLabel : UILabel!
     var timer: Timer!
     
     //    メモを呼び出す用
@@ -35,26 +39,31 @@ class TimerViewController: UIViewController,UITextFieldDelegate {
     //    メモの表示時間
     var index = 0
     
+    //    'Index 0 is out of bounds (must be less than 0)'
+    
     
     override func viewDidLoad() {
         super.viewDidLoad()
         // ラベルを作る
-        myLabel = UILabel(frame: CGRect(x:0,y:0,width:300,height:100))
-        // ラベルの色
-        myLabel.backgroundColor = UIColor.orange
-        // 表示させるテキスト
-        myLabel.text = String("00:00:00")
-        myLabel.font =  myLabel.font?.withSize(50)
-        // テキストの色
-        myLabel.textColor = UIColor.white
-        // テキストを中央寄せ
-        myLabel.textAlignment = NSTextAlignment.center
-        // ラベルの位置
-        myLabel.layer.position = CGPoint(x: self.view.bounds.width/2,y: 200)
-        self.view.addSubview(myLabel)
-        
+        //        myLabel = UILabel(frame: CGRect(x:0,y:0,width:300,height:100))
+        //        // ラベルの色
+        //        myLabel.backgroundColor = UIColor.green
+        //        // 表示させるテキスト
+        //        myLabel.text = String("00:00:00")
+        //        myLabel.font =  myLabel.font?.withSize(50)
+        //       myLabel.font = UIFont.boldSystemFont(ofSize:50)
+        //        // テキストの色
+        //        myLabel.textColor = UIColor.black
+        //        // テキストを中央寄せ
+        //        myLabel.textAlignment = NSTextAlignment.center
+        //        // ラベルの位置
+        //        myLabel.layer.position = CGPoint(x: self.view.bounds.width/2,y: 200)
+        //        self.view.addSubview(myLabel)
+        //
         timerTitle.text = titleStr
-        timerTime.text = "total " + String(timeStr) + " min"
+        timerTime.text = "所要時間" + String(timeStr) + "分"
+        UIApplication.shared.isIdleTimerDisabled = true
+        //       画面がスリープしないようにする
         
         
         if memoTaskArray.count > 0 {
@@ -72,14 +81,16 @@ class TimerViewController: UIViewController,UITextFieldDelegate {
     
     
     @IBAction func startTimer(_ sender: Any) {
+        dismissKeyboard()
         if (count == 0) {
             if let startTime = Int(startTimeInput.text!) {
                 self.count = Float(startTime)  //startTime! * 60
                 
-                self.memoTaskArray = try! Realm().objects(MemoTask.self).sorted(byKeyPath: "memoId").filter("displayTime >= %d", startTime)
-                
+                self.memoTaskArray = try! Realm().objects(MemoTask.self).sorted(byKeyPath: "memoId").filter("taskId= %ld && displayTime >= %d", task.id, startTime)
                 index = 0
-                memoTime = String(memoTaskArray[index].displayTime)
+                if memoTaskArray.count > 0 {
+                    memoTime = String(memoTaskArray[index].displayTime)
+                }
             }
         }
         
@@ -95,9 +106,10 @@ class TimerViewController: UIViewController,UITextFieldDelegate {
         }
     }
     
-
+    
     
     @IBAction func pauseTimer(_ sender: Any) {
+        dismissKeyboard()
         if self.timer != nil {
             // タイマーを破棄
             self.timer.invalidate()      // 現在のタイマーを破棄する
@@ -107,17 +119,21 @@ class TimerViewController: UIViewController,UITextFieldDelegate {
     
     
     @IBAction func resetTimer(_ sender: Any) {
+        dismissKeyboard()
         // リセットボタンを押すと、タイマーの時間を0に＆メモもリセット
         self.count = 0
-        self.myLabel.text = String("00:00:00")
+        self.timerLabel.text = String("00:00:00")
         startTimeInput.text = ""
-        self.memoTaskArray = try! Realm().objects(MemoTask.self).sorted(byKeyPath: "memoId")
-        index = 0
-        timerMemo.text = "ここにメモが表示されます"
-        let nextMemoTask = memoTaskArray[index]
-        //次の表示時間をセットして上書き
-        memoTime = String(nextMemoTask.displayTime)
+        self.memoTaskArray = try! Realm().objects(MemoTask.self).sorted(byKeyPath: "memoId").filter("taskId= %ld",task.id)
         
+        index = 0
+        
+        timerMemo.text = "ここにメモが表示されます"
+        if memoTaskArray.count > 0 {
+            let nextMemoTask = memoTaskArray[index]
+            //次の表示時間をセットして上書き
+            memoTime = String(nextMemoTask.displayTime)
+        }
         if self.timer != nil {
             self.timer.invalidate()
             // 現在のタイマーを破棄する
@@ -135,7 +151,7 @@ class TimerViewController: UIViewController,UITextFieldDelegate {
         // %02d： ２桁表示、0で埋める
         let totalTimeString = String(format: "%02d:%02d:%02d",hour, minute, second)
         
-        myLabel.text = totalTimeString;
+        timerLabel.text = totalTimeString;
         
         
         let totalCountInMinutes = Int(count) // Int(count / 60)
@@ -165,8 +181,6 @@ class TimerViewController: UIViewController,UITextFieldDelegate {
             
         }
         
-        
-        
     }
     
     
@@ -182,5 +196,12 @@ class TimerViewController: UIViewController,UITextFieldDelegate {
         // キーボードを閉じる
         view.endEditing(true)
     }
+    
+    override func viewDidDisappear(_ animated: Bool) {
+        super.viewDidDisappear(animated)
+        //        画面スリープ停止を解除
+        UIApplication.shared.isIdleTimerDisabled = false
+    }
+    
 }
 

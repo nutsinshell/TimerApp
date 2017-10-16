@@ -40,7 +40,7 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
         // Cellに値を設定する.
         let task = taskArray[indexPath.row]
         cell.textLabel?.text = task.title
-        cell.detailTextLabel?.text = ("【total \(task.time) min】")
+        cell.detailTextLabel?.text = ("【 \(task.time) 分】")
         return cell
     }
     // MARK: UITableViewDelegateプロトコルのメソッド
@@ -61,6 +61,12 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
                 self.realm.delete(self.taskArray[indexPath.row])
                 tableView.deleteRows(at: [indexPath as IndexPath], with: UITableViewRowAnimation.fade)
             }
+            let memo = try! Realm().objects(MemoTask.self).sorted(byKeyPath: "taskId")
+            try! realm.write {
+                self.realm.delete(memo.self)
+                
+            }
+            
         }
     
 }
