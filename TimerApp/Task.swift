@@ -15,13 +15,13 @@ class Task: Object {
     // メモ
     dynamic var memo = ""
     
-
+    
     dynamic var createdAt = NSDate()    //作成日時
     dynamic var updatedAt = NSDate()    //更新日時
     
     
     
-    /**
+    /*
      id をプライマリーキーとして設定
      */
     override static func primaryKey() -> String? {

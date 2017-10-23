@@ -67,9 +67,13 @@ class InputViewController: UIViewController, UITableViewDelegate, UITableViewDat
         titleTextField.text = task.title
         timeTextField.text = "\(task.time)"
         
-//        if timeTextField.text == "0"{
-//            timeTextField.textColor = UIColor.red
-//    }
+        //        if timeTextField.text == "0"{
+        //            timeTextField.textColor = UIColor.red
+        //    }
+        
+        memoTableView.estimatedRowHeight = 20
+        memoTableView.rowHeight = UITableViewAutomaticDimension
+        
     }
     
     func dismissKeyboard(){
@@ -85,7 +89,7 @@ class InputViewController: UIViewController, UITableViewDelegate, UITableViewDat
     
     
     func taskWrite(){
-            try! realm.write {
+        try! realm.write {
             self.task.title = self.titleTextField.text!
             self.task.time = Int(self.timeTextField.text!)!
             self.task.updatedAt = NSDate()
@@ -95,7 +99,7 @@ class InputViewController: UIViewController, UITableViewDelegate, UITableViewDat
     
     @IBAction func moveForTimer(_ sender: Any) {
         if timeTextField.text!.isEmpty || Int(timeTextField.text!) == 0  {
-        print("テスト")
+            print("テスト")
             SVProgressHUD.showError(withStatus: "所要時間を入力して下さい")
             return
         }
@@ -107,11 +111,11 @@ class InputViewController: UIViewController, UITableViewDelegate, UITableViewDat
                 SVProgressHUD.showError(withStatus: "所要時間が最後のメモより短くなっています。")
                 return
             }
-//            取れなかったら比較ができないので遷移に移る
+            //            取れなかったら比較ができないので遷移に移る
         }
-       
+        
         performSegue(withIdentifier: "forTimer",sender: nil)
-    
+        
     }
     
     
@@ -186,7 +190,7 @@ class InputViewController: UIViewController, UITableViewDelegate, UITableViewDat
             timerViewController.titleStr = titleTextField.text!
             timerViewController.timeStr = Int(timeTextField.text!)!
             timerViewController.taskId = task.id
-            timerViewController.task = task
+            //            timerViewController.task = task
         }
         else{
             // new memo
@@ -196,8 +200,12 @@ class InputViewController: UIViewController, UITableViewDelegate, UITableViewDat
             memoTask.memoId = allMemos.count + 1
             memoTask.taskId = task.id
             
-            let memoViewController = segue.destination as! MemoViewController
+            let naviController = segue.destination as! UINavigationController
+            let memoViewController = naviController.viewControllers.first as! MemoViewController
+            //            segueでNaviControllerに行って、そのナビのrootvier（firstは最初に紐づけられたという意味）を参照する
+            
             memoViewController.memoTask = memoTask
+            
             
             //            if (timeTextField.text == "") {
             //                memoViewController.maxTime = 0
@@ -222,18 +230,18 @@ class InputViewController: UIViewController, UITableViewDelegate, UITableViewDat
         memoTableView.reloadData()
     }
     
-//    override func viewWillDisappear(_ animated: Bool) {
-//        taskWrite()
-//        super.viewWillDisappear(animated)
-//    }
+    //    override func viewWillDisappear(_ animated: Bool) {
+    //        taskWrite()
+    //        super.viewWillDisappear(animated)
+    //    }
     
     override func viewWillDisappear(_ animated: Bool) {
         super.viewWillDisappear(animated)
-
+        
         if !(titleTextField.text!.isEmpty) || Int(timeTextField.text!)! > 0 || taskArray.count > 0 {
-        self.taskWrite()
-            }
-   }
+            self.taskWrite()
+        }
+    }
 }
 
 

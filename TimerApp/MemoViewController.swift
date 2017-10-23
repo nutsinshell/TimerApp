@@ -18,7 +18,7 @@ class MemoViewController: UIViewController, UITextFieldDelegate {
     var memoTasks = try! Realm().objects(MemoTask.self)
     //    MemoViewControllerでmemoTasksを使うために、Realmからデータをもらい、InputViewControllerから遷移するときにmemoTasksをもらう
     var isSaved:Bool = false
-//    saveされたかどうか判別
+    //    saveされたかどうか判別
     
     
     
@@ -79,8 +79,17 @@ class MemoViewController: UIViewController, UITextFieldDelegate {
             self.realm.add(self.memoTask, update: true)
         }
         SVProgressHUD.showSuccess(withStatus: "保存しました")
-        var isSaved = true
-        self.navigationController?.popViewController(animated : true)
+        
+        if self.presentingViewController != nil  {
+            //モーダルの処理
+            self.dismiss(animated: true, completion: nil)
+        } else {
+            //ナビゲーションの処理
+            self.navigationController?.popViewController(animated : true)
+        }
+        
+        //        var isSaved = true
+        //        self.navigationController?.popViewController(animated : true)
         //        一つ前に戻る（rootに戻るとかインデックスを指定して戻るやり方もある）
         
         
@@ -88,79 +97,86 @@ class MemoViewController: UIViewController, UITextFieldDelegate {
     }
     
     @IBAction func backButton(_ sender: Any) {
-        if  isSaved == false {
-                let alert: UIAlertController = UIAlertController(title: "メモは保存されていません", message: "編集内容を破棄しますか？", preferredStyle:  UIAlertControllerStyle.alert)
-                
-            let defaultAction: UIAlertAction = UIAlertAction(title: "破棄する", style: UIAlertActionStyle.destructive, handler:{
-                    // ボタンが押された時の処理を書く（クロージャ実装）
-                    (action: UIAlertAction!) -> Void in
-                    self.navigationController?.popViewController(animated : true)
-                
-                    print("OK")
-                })
-                // キャンセルボタン
-                let cancelAction: UIAlertAction = UIAlertAction(title: "キャンセル", style: UIAlertActionStyle.default, handler:{
-                    // ボタンが押された時の処理を書く（クロージャ実装）
-                    (action: UIAlertAction!) -> Void in
-                    print("Cancel")
-                     return
-                })
         
-                // ③ UIAlertControllerにActionを追加
-                alert.addAction(cancelAction)
-                alert.addAction(defaultAction)
+        if  isSaved == false {
+            let alert: UIAlertController = UIAlertController(title: "メモは保存されていません", message: "編集内容を破棄しますか？", preferredStyle:  UIAlertControllerStyle.alert)
+            
+            let defaultAction: UIAlertAction = UIAlertAction(title: "破棄する", style: UIAlertActionStyle.destructive, handler:{
+                // ボタンが押された時の処理を書く（クロージャ実装）
+                (action: UIAlertAction!) -> Void in
                 
-                // ④ Alertを表示
-                present(alert, animated: true, completion: nil)
-            }
+                if self.presentingViewController != nil  {
+                    //モーダルの処理
+                    self.dismiss(animated: true, completion: nil)
+                } else {
+                    //ナビゲーションの処理
+                    self.navigationController?.popViewController(animated : true)
+                }
+                
+            })
+            // キャンセルボタン
+            let cancelAction: UIAlertAction = UIAlertAction(title: "キャンセル", style: UIAlertActionStyle.default, handler:{
+                // ボタンが押された時の処理を書く（クロージャ実装）
+                (action: UIAlertAction!) -> Void in
+                print("Cancel")
+                return
+            })
+            
+            // ③ UIAlertControllerにActionを追加
+            alert.addAction(cancelAction)
+            alert.addAction(defaultAction)
+            
+            // ④ Alertを表示
+            present(alert, animated: true, completion: nil)
+        }
     }
     
-        
-        
-        override func didReceiveMemoryWarning() {
-            super.didReceiveMemoryWarning()
-            // Dispose of any resources that can be recreated.
-        }
-        
     
-        //    戻るで自動的に保存（チェックなし）
-        //    override func viewWillDisappear(_ animated: Bool) {
-        //        try! realm.write {
-        //            self.memoTask.displayTime = self.displayTime.text!
-        //            self.memoTask.displayMemo = self.displayMemo.text
-        //            self.realm.add(self.memoTask, update: true)
+    
+    override func didReceiveMemoryWarning() {
+        super.didReceiveMemoryWarning()
+        // Dispose of any resources that can be recreated.
+    }
+    
+    
+    //    戻るで自動的に保存（チェックなし）
+    //    override func viewWillDisappear(_ animated: Bool) {
+    //        try! realm.write {
+    //            self.memoTask.displayTime = self.displayTime.text!
+    //            self.memoTask.displayMemo = self.displayMemo.text
+    //            self.realm.add(self.memoTask, update: true)
+    //        }
+    //
+    //        super.viewWillDisappear(animated)
+    //
+    //    }
+    
+    //    アドバンスバーション（前半）
+    //    func numberDesuka(s: String) -> Bool {
+    //        return Int(s) != nil
+    //    }
+    
+    //  ↓textFieldはdelegateすることで使えるようになるので,displayTime.delegate = selfしておかないと無効
+    func textField(_ textField: UITextField, shouldChangeCharactersIn range: NSRange, replacementString str: String) -> Bool {
+        return Int(str) != nil || str.isEmpty
+        
+        //        自動的にtrueかfalseか判断して答えを吐き出す
+        //        ↓これも同じ意味
+        //        if Int(str) == nil {
+        //            return false
         //        }
         //
-        //        super.viewWillDisappear(animated)
+        //        return true
         //
-        //    }
-        
-        //    アドバンスバーション（前半）
-        //    func numberDesuka(s: String) -> Bool {
-        //        return Int(s) != nil
-        //    }
-        
-        //  ↓textFieldはdelegateすることで使えるようになるので,displayTime.delegate = selfしておかないと無効
-        func textField(_ textField: UITextField, shouldChangeCharactersIn range: NSRange, replacementString str: String) -> Bool {
-            return Int(str) != nil || str.isEmpty
-            
-            //        自動的にtrueかfalseか判断して答えを吐き出す
-            //        ↓これも同じ意味
-            //        if Int(str) == nil {
-            //            return false
-            //        }
-            //
-            //        return true
-            //
-            //
-            //         アドバンスバーション（後半）
-            //        return numberDesuka(s: str)
-        }
-        
-        func dismissKeyboard(){
-            // キーボードを閉じる
-            view.endEditing(true)
-        }
+        //
+        //         アドバンスバーション（後半）
+        //        return numberDesuka(s: str)
+    }
+    
+    func dismissKeyboard(){
+        // キーボードを閉じる
+        view.endEditing(true)
+    }
     
 }
 

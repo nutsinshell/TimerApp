@@ -8,9 +8,7 @@ class TimerViewController: UIViewController,UITextFieldDelegate {
     @IBOutlet weak var timerTitle: UILabel!
     @IBOutlet weak var timerTime: UILabel!
     @IBOutlet weak var timerMemo: UITextView!
-    
     @IBOutlet weak var startTimeInput: UITextField!
-    
     @IBOutlet weak var timerLabel: UILabel!
     
     
@@ -19,7 +17,7 @@ class TimerViewController: UIViewController,UITextFieldDelegate {
     var labelInput = try! Realm().objects(Task.self).sorted(byKeyPath: "id", ascending: false)
     
     //    タイトルと時間を受け取るための変数
-    var task: Task!
+    //    var task: Task!
     var taskId = 0
     
     var titleStr = ""
@@ -30,7 +28,6 @@ class TimerViewController: UIViewController,UITextFieldDelegate {
     var count : Float = 0
     //    var myLabel : UILabel!
     var timer: Timer!
-    
     //    メモを呼び出す用
     //    var memoTaskArray : Results<MemoTask>?
     var memoTaskArray = try! Realm().objects(MemoTask.self).sorted(byKeyPath: "memoId")
@@ -44,22 +41,6 @@ class TimerViewController: UIViewController,UITextFieldDelegate {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        // ラベルを作る
-        //        myLabel = UILabel(frame: CGRect(x:0,y:0,width:300,height:100))
-        //        // ラベルの色
-        //        myLabel.backgroundColor = UIColor.green
-        //        // 表示させるテキスト
-        //        myLabel.text = String("00:00:00")
-        //        myLabel.font =  myLabel.font?.withSize(50)
-        //       myLabel.font = UIFont.boldSystemFont(ofSize:50)
-        //        // テキストの色
-        //        myLabel.textColor = UIColor.black
-        //        // テキストを中央寄せ
-        //        myLabel.textAlignment = NSTextAlignment.center
-        //        // ラベルの位置
-        //        myLabel.layer.position = CGPoint(x: self.view.bounds.width/2,y: 200)
-        //        self.view.addSubview(myLabel)
-        //
         timerTitle.text = titleStr
         timerTime.text = "所要時間" + String(timeStr) + "分"
         UIApplication.shared.isIdleTimerDisabled = true
@@ -84,14 +65,20 @@ class TimerViewController: UIViewController,UITextFieldDelegate {
         dismissKeyboard()
         if (count == 0) {
             if let startTime = Int(startTimeInput.text!) {
-                self.count = Float(startTime)  //startTime! * 60
+                self.count = Float(startTime * 60)  //startTime
                 
-                self.memoTaskArray = try! Realm().objects(MemoTask.self).sorted(byKeyPath: "memoId").filter("taskId= %ld && displayTime >= %d", task.id, startTime)
+                self.memoTaskArray = try! Realm().objects(MemoTask.self).sorted(byKeyPath: "memoId").filter("taskId= %ld && displayTime >= %d", taskId, startTime)
                 index = 0
                 if memoTaskArray.count > 0 {
                     memoTime = String(memoTaskArray[index].displayTime)
                 }
             }
+            if Int(count) > Int(timeStr * 60) + 60 {
+                timerLabel.backgroundColor = UIColor(red: 1.0, green: 0.8, blue: 1.0, alpha:1.0)
+            }
+            //            }else{
+            //            timerLabel.backgroundColor = UIColor.white
+            //        }
         }
         
         if self.timer == nil{
@@ -124,11 +111,11 @@ class TimerViewController: UIViewController,UITextFieldDelegate {
         self.count = 0
         self.timerLabel.text = String("00:00:00")
         startTimeInput.text = ""
-        self.memoTaskArray = try! Realm().objects(MemoTask.self).sorted(byKeyPath: "memoId").filter("taskId= %ld",task.id)
+        self.memoTaskArray = try! Realm().objects(MemoTask.self).sorted(byKeyPath: "memoId").filter("taskId= %ld",taskId)
         
         index = 0
         
-        timerMemo.text = "ここにメモが表示されます"
+        timerMemo.text = "　ここにメモが表示されます"
         if memoTaskArray.count > 0 {
             let nextMemoTask = memoTaskArray[index]
             //次の表示時間をセットして上書き
@@ -140,6 +127,7 @@ class TimerViewController: UIViewController,UITextFieldDelegate {
             self.timer = nil
             // startTimer() の timer == nil で判断するために、 timer = nil としておく
         }
+        timerLabel.backgroundColor = UIColor.white
     }
     
     func timerCounter(timer : Timer) {
@@ -154,7 +142,7 @@ class TimerViewController: UIViewController,UITextFieldDelegate {
         timerLabel.text = totalTimeString;
         
         
-        let totalCountInMinutes = Int(count) // Int(count / 60)
+        let totalCountInMinutes = Int(count / 60) // Int(count)
         
         
         if let memoTimeValue = Int(memoTime), memoTimeValue <= totalCountInMinutes {
@@ -183,13 +171,17 @@ class TimerViewController: UIViewController,UITextFieldDelegate {
         
     }
     
-    
     // TimerのtimeIntervalで指定された秒数毎に呼び出されるメソッド
     func onUpdate(timer : Timer){
         
-        // カウントの値1増加
-        count += 1
-        timerCounter(timer: timer)
+        
+        timerCounter(timer: timer) // カウントの値が増加されてない状態
+        count += 1      // カウントの値1増加
+        
+        if Int(count) > Int(timeStr * 60) + 60 {
+            timerLabel.backgroundColor = UIColor(red: 1.0, green: 0.8, blue: 1.0, alpha:1.0)
+        }
+        
     }
     
     func dismissKeyboard(){

@@ -21,13 +21,17 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
         listTableView.delegate = self
         listTableView.dataSource = self
         
+        listTableView.estimatedRowHeight = 20
+        listTableView.rowHeight = UITableViewAutomaticDimension
+        
+        
     }
     override func didReceiveMemoryWarning() {
         super.didReceiveMemoryWarning()
         // Dispose of any resources that can be recreated.
     }
     
-
+    
     // MARK: UITableViewDataSourceプロトコルのメソッド
     // データの数（＝セルの数）を返すメソッド
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
@@ -40,7 +44,7 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
         // Cellに値を設定する.
         let task = taskArray[indexPath.row]
         cell.textLabel?.text = task.title
-        cell.detailTextLabel?.text = ("【 \(task.time) 分】")
+        cell.detailTextLabel?.text = ("【\(task.time)分】")
         return cell
     }
     // MARK: UITableViewDelegateプロトコルのメソッド
@@ -68,8 +72,8 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
             }
             
         }
-    
-}
+        
+    }
     // segue で画面遷移するに呼ばれる
     override func prepare(for segue: UIStoryboardSegue, sender: Any?){
         let inputViewController:InputViewController = segue.destination as! InputViewController
@@ -93,5 +97,5 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
         super.viewWillAppear(animated)
         listTableView.reloadData()
     }
-
+    
 }
