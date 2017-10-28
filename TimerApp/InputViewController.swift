@@ -40,7 +40,7 @@ extension UIView {
 
 //追加ここまで
 
-class InputViewController: UIViewController, UITableViewDelegate, UITableViewDataSource {
+class InputViewController: UIViewController, UITableViewDelegate, UITableViewDataSource, UITextFieldDelegate {
     
     
     @IBOutlet weak var titleTextField: UITextField!
@@ -63,6 +63,8 @@ class InputViewController: UIViewController, UITableViewDelegate, UITableViewDat
         memoTableView.keyboardDismissMode = .interactive
         
         
+        timeTextField.delegate = self
+        
         self.timeTextField.keyboardType = UIKeyboardType.numberPad
         titleTextField.text = task.title
         timeTextField.text = "\(task.time)"
@@ -73,7 +75,6 @@ class InputViewController: UIViewController, UITableViewDelegate, UITableViewDat
         
         memoTableView.estimatedRowHeight = 20
         memoTableView.rowHeight = UITableViewAutomaticDimension
-        
     }
     
     func dismissKeyboard(){
@@ -85,7 +86,11 @@ class InputViewController: UIViewController, UITableViewDelegate, UITableViewDat
         super.didReceiveMemoryWarning()
         // Dispose of any resources that can be recreated.
     }
-    
+
+    func textField(_ textField: UITextField, shouldChangeCharactersIn range: NSRange, replacementString str: String) -> Bool {
+        
+        return textField === timeTextField && Int(str) != nil || str.isEmpty
+    }   //数字以外のコピペ禁止
     
     
     func taskWrite(){
@@ -141,12 +146,13 @@ class InputViewController: UIViewController, UITableViewDelegate, UITableViewDat
         // 再利用可能な cell を得る
         let cell = memoTableView.dequeueReusableCell(withIdentifier: "Cell", for: indexPath)
         let memo = taskArray[indexPath.row]
-        cell.detailTextLabel?.text = memo.displayMemo
-        cell.textLabel?.text = "\(memo.displayTime)" + "分目 : "
+        
+       
+//        cell.detailTextLabel?.text = memo.displayMemo
+        cell.textLabel?.text = "\(memo.displayTime)" + "分目 : " + memo.displayMemo
         
         return cell
     }
-    
     
     
     

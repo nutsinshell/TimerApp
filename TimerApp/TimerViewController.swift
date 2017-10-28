@@ -12,6 +12,7 @@ class TimerViewController: UIViewController,UITextFieldDelegate {
     @IBOutlet weak var timerLabel: UILabel!
     
     
+    
     let realm = try! Realm()
     
     var labelInput = try! Realm().objects(Task.self).sorted(byKeyPath: "id", ascending: false)
@@ -19,7 +20,6 @@ class TimerViewController: UIViewController,UITextFieldDelegate {
     //    タイトルと時間を受け取るための変数
     //    var task: Task!
     var taskId = 0
-    
     var titleStr = ""
     var timeStr = 0
     
@@ -36,8 +36,6 @@ class TimerViewController: UIViewController,UITextFieldDelegate {
     //    メモの表示時間
     var index = 0
     
-    //    'Index 0 is out of bounds (must be less than 0)'
-    
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -52,14 +50,17 @@ class TimerViewController: UIViewController,UITextFieldDelegate {
         }
         //初期値の設定 `memoTaskArray` が空じゃないときだけアクセスする
         
-        self.startTimeInput.keyboardType = UIKeyboardType.numberPad
+        
         
         // 背景をタップしたらdismissKeyboardメソッドを呼ぶように設定する
         let tapGesture: UITapGestureRecognizer = UITapGestureRecognizer(target:self, action:#selector(dismissKeyboard))
         self.view.addGestureRecognizer(tapGesture)
+        
+        self.startTimeInput.keyboardType = UIKeyboardType.numberPad
+        //        キーボードを数字のみにする
+        startTimeInput.delegate = self
+        //        さらにコピペの入力制限のためdelegate有効化
     }
-    
-    
     
     @IBAction func startTimer(_ sender: Any) {
         dismissKeyboard()
@@ -73,7 +74,7 @@ class TimerViewController: UIViewController,UITextFieldDelegate {
                     memoTime = String(memoTaskArray[index].displayTime)
                 }
             }
-            if Int(count) > Int(timeStr * 60) + 60 {
+            if Int(count) > Int(timeStr * 60) {
                 timerLabel.backgroundColor = UIColor(red: 1.0, green: 0.8, blue: 1.0, alpha:1.0)
             }
             //            }else{
@@ -115,7 +116,7 @@ class TimerViewController: UIViewController,UITextFieldDelegate {
         
         index = 0
         
-        timerMemo.text = "　ここにメモが表示されます"
+        timerMemo.text = " ここにメモが表示されます"
         if memoTaskArray.count > 0 {
             let nextMemoTask = memoTaskArray[index]
             //次の表示時間をセットして上書き
@@ -133,7 +134,8 @@ class TimerViewController: UIViewController,UITextFieldDelegate {
     func timerCounter(timer : Timer) {
         let hour = Int(count / 60 / 60)
         // fmod() 余りを計算
-        let minute = Int(count / 60)
+//        let minute = Int(count / 60)
+        let minute = Int(count) % 3600 / 60
         // currentTime/60 の余り
         let second = Int(count) % 60
         // %02d： ２桁表示、0で埋める
@@ -164,7 +166,12 @@ class TimerViewController: UIViewController,UITextFieldDelegate {
             if (newMinute > 1) &&  (minute == newMinute){
                 let newSecond = Int(Int(memoTime)! % 60)
                 memoTime = String(newSecond)
-                
+            
+//            let newHour = Int(Int(memoTime)! / 60)
+//            if (newHour > 1) &&  (hour == newHour){
+//                let newminute = Int(Int(memoTime)! % 60)
+//                memoTime = String(newminute)
+            
             }
             
         }
@@ -178,11 +185,17 @@ class TimerViewController: UIViewController,UITextFieldDelegate {
         timerCounter(timer: timer) // カウントの値が増加されてない状態
         count += 1      // カウントの値1増加
         
-        if Int(count) > Int(timeStr * 60) + 60 {
+        if Int(count) > Int(timeStr * 60) {
             timerLabel.backgroundColor = UIColor(red: 1.0, green: 0.8, blue: 1.0, alpha:1.0)
         }
         
     }
+    
+    func textField(_ textField: UITextField, shouldChangeCharactersIn range: NSRange, replacementString str: String) -> Bool {
+        
+        return textField === startTimeInput && Int(str) != nil || str.isEmpty
+    }   //数字以外のコピペ禁止
+    
     
     func dismissKeyboard(){
         // キーボードを閉じる
