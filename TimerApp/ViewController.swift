@@ -8,6 +8,7 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
     @IBOutlet weak var listTableView: UITableView!
     
     
+    
     // Realmインスタンスを取得する
     let realm = try! Realm()
     
@@ -21,7 +22,7 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
         listTableView.delegate = self
         listTableView.dataSource = self
         
-        listTableView.estimatedRowHeight = 20
+        listTableView.estimatedRowHeight = 30
         listTableView.rowHeight = UITableViewAutomaticDimension
         
         
@@ -61,16 +62,16 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
     func tableView(_ tableView: UITableView, commit editingStyle: UITableViewCellEditingStyle, forRowAt indexPath: IndexPath) {
         if editingStyle == UITableViewCellEditingStyle.delete {
             // データベースから削除する  // ←以降追加する
+            
             try! realm.write {
-                self.realm.delete(self.taskArray[indexPath.row])
+                let task = self.taskArray[indexPath.row]
+                let memoTaskArray = try! Realm().objects(MemoTask.self).filter("taskId= %ld", task.id)
+                
+                self.realm.delete(memoTaskArray)
+                self.realm.delete(task)
+                
                 tableView.deleteRows(at: [indexPath as IndexPath], with: UITableViewRowAnimation.fade)
             }
-            let memo = try! Realm().objects(MemoTask.self).sorted(byKeyPath: "taskId")
-            try! realm.write {
-                self.realm.delete(memo.self)
-                
-            }
-            
         }
         
     }
@@ -81,6 +82,7 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
         if segue.identifier == "cellSegue" {
             let indexPath = self.listTableView.indexPathForSelectedRow
             inputViewController.task = taskArray[indexPath!.row]
+        
         } else {
             let task = Task()
             task.time = 0
@@ -91,6 +93,8 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
             
             inputViewController.task = task
         }
+        
+//        print(inputViewController.task.id)
     }
     // 入力画面から戻ってきた時に TableView を更新させる
     override func viewWillAppear(_ animated: Bool) {

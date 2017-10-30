@@ -1,5 +1,3 @@
-
-
 import UIKit
 import RealmSwift
 import SVProgressHUD
@@ -49,11 +47,10 @@ class InputViewController: UIViewController, UITableViewDelegate, UITableViewDat
     
     
     var task:Task!
-    var memoTask:MemoTask!
+//    var memoTask:MemoTask!
     let realm = try! Realm()
     
-    
-    var taskArray = try! Realm().objects(MemoTask.self).sorted(byKeyPath: "displayTime", ascending: true)
+    var memoTaskArray = try! Realm().objects(MemoTask.self).sorted(byKeyPath: "displayTime", ascending: true)
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -73,7 +70,7 @@ class InputViewController: UIViewController, UITableViewDelegate, UITableViewDat
         //            timeTextField.textColor = UIColor.red
         //    }
         
-        memoTableView.estimatedRowHeight = 20
+        memoTableView.estimatedRowHeight = 30
         memoTableView.rowHeight = UITableViewAutomaticDimension
     }
     
@@ -109,7 +106,7 @@ class InputViewController: UIViewController, UITableViewDelegate, UITableViewDat
             return
         }
         
-        if let task = taskArray.last{   //もしlastの値が取れたら
+        if let task = memoTaskArray.last{   //もしlastの値が取れたら
             let displayTime = task.displayTime
             if Int(timeTextField.text!)! < displayTime {
                 print("テスト")
@@ -138,14 +135,14 @@ class InputViewController: UIViewController, UITableViewDelegate, UITableViewDat
     
     // データの数（＝セルの数）を返すメソッド
     func tableView(_ memoTableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return taskArray.count
+        return memoTaskArray.count
     }
     
     // 各セルの内容を返すメソッド
     func tableView(_ memoTableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         // 再利用可能な cell を得る
         let cell = memoTableView.dequeueReusableCell(withIdentifier: "Cell", for: indexPath)
-        let memo = taskArray[indexPath.row]
+        let memo = memoTaskArray[indexPath.row]
         
        
 //        cell.detailTextLabel?.text = memo.displayMemo
@@ -170,8 +167,9 @@ class InputViewController: UIViewController, UITableViewDelegate, UITableViewDat
     func tableView(_ memoTableView: UITableView, commit editingStyle: UITableViewCellEditingStyle, forRowAt indexPath: IndexPath) {
         if editingStyle == UITableViewCellEditingStyle.delete {
             // データベースから削除する  // ←以降追加する
-            try! realm.write {
-                self.realm.delete(self.taskArray[indexPath.row])
+            try! realm.write {               
+                self.realm.delete(self.memoTaskArray[indexPath.row])
+                
                 memoTableView.deleteRows(at: [indexPath as IndexPath], with: UITableViewRowAnimation.fade)
             }
         }
@@ -184,15 +182,15 @@ class InputViewController: UIViewController, UITableViewDelegate, UITableViewDat
             let memoViewController = segue.destination as! MemoViewController
             let indexPath = self.memoTableView.indexPathForSelectedRow
             
-            //            memoViewController.taskArray = taskArray
-            memoViewController.memoTask = taskArray[indexPath!.row]
+            //            memoViewController.memoTaskArray = memoTaskArray
+            memoViewController.memoTask = memoTaskArray[indexPath!.row]
             memoViewController.maxTime = timeTextField.text == "" ? 0 : Int(timeTextField.text!)!
             memoViewController.isNew = false
             //InputViewからMemoViewに遷移するときにtaskArrayを渡してあげる
         }
         else if segue.identifier == "forTimer"{
             let timerViewController = segue.destination as! TimerViewController
-            timerViewController.memoTaskArray = taskArray
+            timerViewController.memoTaskArray = memoTaskArray
             timerViewController.titleStr = titleTextField.text!
             timerViewController.timeStr = Int(timeTextField.text!)!
             timerViewController.taskId = task.id
@@ -232,7 +230,7 @@ class InputViewController: UIViewController, UITableViewDelegate, UITableViewDat
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         
-        taskArray = try! Realm().objects(MemoTask.self).sorted(byKeyPath: "displayTime", ascending: true).filter("taskId= %ld", task.id)
+        memoTaskArray = try! Realm().objects(MemoTask.self).sorted(byKeyPath: "displayTime", ascending: true).filter("taskId= %ld", task.id)
         memoTableView.reloadData()
     }
     
@@ -244,7 +242,7 @@ class InputViewController: UIViewController, UITableViewDelegate, UITableViewDat
     override func viewWillDisappear(_ animated: Bool) {
         super.viewWillDisappear(animated)
         
-        if !(titleTextField.text!.isEmpty) || Int(timeTextField.text!)! > 0 || taskArray.count > 0 {
+        if !(titleTextField.text!.isEmpty) || Int(timeTextField.text!)! > 0 || memoTaskArray.count > 0 {
             self.taskWrite()
         }
     }
