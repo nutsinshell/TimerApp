@@ -1,0 +1,48 @@
+
+/* Class = "UILabel"; text = "分からスタート"; ObjectID = "5Mo-Vp-U7U"; */
+"5Mo-Vp-U7U.text" = "分からスタート";
+
+/* Class = "UILabel"; text = "Title"; ObjectID = "68U-nf-wik"; */
+"68U-nf-wik.text" = "Title";
+
+/* Class = "UILabel"; text = "タイトル"; ObjectID = "9la-6Z-Ice"; */
+"9la-6Z-Ice.text" = "タイトル";
+
+/* Class = "UILabel"; text = "分目"; ObjectID = "BVm-Zx-qzL"; */
+"BVm-Zx-qzL.text" = "分目";
+
+/* Class = "UILabel"; text = "タイトル"; ObjectID = "CMg-fZ-9p9"; */
+"CMg-fZ-9p9.text" = "タイトル";
+
+/* Class = "UIBarButtonItem"; title = "Done"; ObjectID = "MWV-Yw-9Kd"; */
+"MWV-Yw-9Kd.title" = "Done";
+
+/* Class = "UILabel"; text = "表示時間"; ObjectID = "Nc5-Dq-sQa"; */
+"Nc5-Dq-sQa.text" = "表示時間";
+
+/* Class = "UILabel"; text = "Title"; ObjectID = "bIu-ka-REV"; */
+"bIu-ka-REV.text" = "Title";
+
+/* Class = "UILabel"; text = "＋ボタンで新規メモ追加"; ObjectID = "fXn-QZ-7c3"; */
+"fXn-QZ-7c3.text" = "＋ボタンで新規メモ追加";
+
+/* Class = "UILabel"; text = "メモ"; ObjectID = "fnI-Ud-JVQ"; */
+"fnI-Ud-JVQ.text" = "メモ";
+
+/* Class = "UILabel"; text = "時間"; ObjectID = "jbX-hA-1vX"; */
+"jbX-hA-1vX.text" = "時間";
+
+/* Class = "UILabel"; text = "00:00:00"; ObjectID = "lPl-rM-kls"; */
+"lPl-rM-kls.text" = "00:00:00";
+
+/* Class = "UITextView"; text = "ここにメモが表示されます"; ObjectID = "oDA-4J-W2Y"; */
+"oDA-4J-W2Y.text" = "ここにメモが表示されます";
+
+/* Class = "UILabel"; text = "分"; ObjectID = "ugd-f9-4KA"; */
+"ugd-f9-4KA.text" = "分";
+
+/* Class = "UILabel"; text = "Detail"; ObjectID = "xK7-zv-Bcy"; */
+"xK7-zv-Bcy.text" = "Detail";
+
+/* Class = "UILabel"; text = "所要時間"; ObjectID = "zsa-7j-gze"; */
+"zsa-7j-gze.text" = "所要時間";
