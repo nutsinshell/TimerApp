@@ -8,6 +8,7 @@
 
 /* Begin PBXBuildFile section */
 		072283C21F49B40E00961E62 /* TimerViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 072283C11F49B40E00961E62 /* TimerViewController.swift */; };
+		07B9F8091FAB745D000C9B3F /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 07B9F8051FAB713E000C9B3F /* GoogleService-Info.plist */; };
 		07D571021F41DA140026B12E /* Task.swift in Sources */ = {isa = PBXBuildFile; fileRef = 07D571011F41DA140026B12E /* Task.swift */; };
 		07D571041F4331C60026B12E /* MemoViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 07D571031F4331C60026B12E /* MemoViewController.swift */; };
 		07F733731F3F28D900618EBD /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 07F733721F3F28D900618EBD /* AppDelegate.swift */; };
@@ -23,6 +24,7 @@
 		072283C11F49B40E00961E62 /* TimerViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TimerViewController.swift; sourceTree = "<group>"; };
 		07B9F8011FA809DE000C9B3F /* ja */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = ja; path = ja.lproj/Main.strings; sourceTree = "<group>"; };
 		07B9F8021FA809DF000C9B3F /* ja */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = ja; path = ja.lproj/LaunchScreen.strings; sourceTree = "<group>"; };
+		07B9F8051FAB713E000C9B3F /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
 		07D571011F41DA140026B12E /* Task.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Task.swift; sourceTree = "<group>"; };
 		07D571031F4331C60026B12E /* MemoViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MemoViewController.swift; sourceTree = "<group>"; };
 		07F7336F1F3F28D900618EBD /* TimerApp.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = TimerApp.app; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -81,6 +83,7 @@
 				07F733791F3F28D900618EBD /* Assets.xcassets */,
 				07F7337B1F3F28D900618EBD /* LaunchScreen.storyboard */,
 				07F7337E1F3F28D900618EBD /* Info.plist */,
+				07B9F8051FAB713E000C9B3F /* GoogleService-Info.plist */,
 			);
 			path = TimerApp;
 			sourceTree = "<group>";
@@ -165,6 +168,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				07B9F8091FAB745D000C9B3F /* GoogleService-Info.plist in Resources */,
 				07F7337D1F3F28D900618EBD /* LaunchScreen.storyboard in Resources */,
 				07F7337A1F3F28D900618EBD /* Assets.xcassets in Resources */,
 				07F733781F3F28D900618EBD /* Main.storyboard in Resources */,
