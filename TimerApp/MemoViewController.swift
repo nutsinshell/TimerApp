@@ -1,8 +1,9 @@
 import UIKit
 import RealmSwift
 import SVProgressHUD
+import GoogleMobileAds  //ad
 
-class MemoViewController: UIViewController, UITextFieldDelegate {
+class MemoViewController: UIViewController, UITextFieldDelegate,GADBannerViewDelegate{
     
     
     @IBOutlet weak var displayTime: UITextField!
@@ -20,7 +21,9 @@ class MemoViewController: UIViewController, UITextFieldDelegate {
     var isSaved:Bool = false
     //    saveされたかどうか判別
     
-    
+    let AdMobID = "ca-app-pub-9723884147061848/1352923088"     //ad
+    let TEST_ID = "ca-app-pub-9723884147061848/1352923088"      //ad
+    let AdMobTest:Bool = false  //ad
     
     
     override func viewDidLoad() {
@@ -43,6 +46,28 @@ class MemoViewController: UIViewController, UITextFieldDelegate {
         
         //    戻るボタンを消す
         self.navigationItem.hidesBackButton = true
+        
+        //以下ad用追加
+        print("Google Mobile Ads SDK version: \(GADRequest.sdkVersion())")
+        
+        var admobView = GADBannerView()
+        
+        admobView = GADBannerView(adSize:kGADAdSizeBanner)
+        admobView.frame.origin = CGPoint(x:0, y:self.view.frame.size.height - admobView.frame.height)
+        admobView.frame.size = CGSize(width:self.view.frame.width, height:admobView.frame.height)
+        
+        if AdMobTest {
+            admobView.adUnitID = "ca-app-pub-9723884147061848/1352923088"
+        }
+        else{
+            admobView.adUnitID = AdMobID
+        }
+        
+        admobView.rootViewController = self
+        admobView.load(GADRequest())
+        
+        self.view.addSubview(admobView)
+        //ad用追加ここまで
         
     }
     

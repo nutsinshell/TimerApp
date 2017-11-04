@@ -1,6 +1,7 @@
 import UIKit
 import RealmSwift
 import SVProgressHUD
+import GoogleMobileAds  //ad
 
 //UIデザインのために追加
 extension UIView {
@@ -38,7 +39,7 @@ extension UIView {
 
 //追加ここまで
 
-class InputViewController: UIViewController, UITableViewDelegate, UITableViewDataSource, UITextFieldDelegate {
+class InputViewController: UIViewController, UITableViewDelegate, UITableViewDataSource, UITextFieldDelegate,GADBannerViewDelegate {
     
     
     @IBOutlet weak var titleTextField: UITextField!
@@ -51,6 +52,10 @@ class InputViewController: UIViewController, UITableViewDelegate, UITableViewDat
     let realm = try! Realm()
     
     var memoTaskArray = try! Realm().objects(MemoTask.self).sorted(byKeyPath: "displayTime", ascending: true)
+    
+    let AdMobID = "ca-app-pub-9723884147061848/1352923088"     //ad
+    let TEST_ID = "ca-app-pub-9723884147061848/1352923088"      //ad
+    let AdMobTest:Bool = false  //ad
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -72,6 +77,28 @@ class InputViewController: UIViewController, UITableViewDelegate, UITableViewDat
         
         memoTableView.estimatedRowHeight = 30
         memoTableView.rowHeight = UITableViewAutomaticDimension
+        
+        //以下ad用追加
+        print("Google Mobile Ads SDK version: \(GADRequest.sdkVersion())")
+        
+        var admobView = GADBannerView()
+        
+        admobView = GADBannerView(adSize:kGADAdSizeBanner)
+        admobView.frame.origin = CGPoint(x:0, y:self.view.frame.size.height - admobView.frame.height)
+        admobView.frame.size = CGSize(width:self.view.frame.width, height:admobView.frame.height)
+        
+        if AdMobTest {
+            admobView.adUnitID = "ca-app-pub-9723884147061848/1352923088"
+        }
+        else{
+            admobView.adUnitID = AdMobID
+        }
+        
+        admobView.rootViewController = self
+        admobView.load(GADRequest())
+        
+        self.view.addSubview(admobView)
+        //ad用追加ここまで
     }
     
     func dismissKeyboard(){

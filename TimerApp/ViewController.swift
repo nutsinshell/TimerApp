@@ -2,22 +2,18 @@
 
 import UIKit
 import RealmSwift
+import GoogleMobileAds  //ad
 
-class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSource {
-    
-
-    
+class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSource,GADBannerViewDelegate{
     @IBOutlet weak var listTableView: UITableView!
-    
-    
-    
     // Realmインスタンスを取得する
-    let realm = try! Realm()
-    
-    // DB内のタスクが格納されるリスト。
-    // 日付近い順\順でソート：降順
+    let realm = try! Realm()    // DB内のタスクが格納されるリスト。
     // 以降内容をアップデートするとリスト内は自動的に更新される。
     var taskArray = try! Realm().objects(Task.self).sorted(byKeyPath: "updatedAt", ascending:false)
+    
+    let AdMobID = "ca-app-pub-9723884147061848/1352923088"     //ad
+    let TEST_ID = "ca-app-pub-9723884147061848/1352923088"      //ad
+    let AdMobTest:Bool = false  //ad
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -27,8 +23,30 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
         listTableView.estimatedRowHeight = 30
         listTableView.rowHeight = UITableViewAutomaticDimension
         
+        //以下ad用追加
+        print("Google Mobile Ads SDK version: \(GADRequest.sdkVersion())")
         
+        var admobView = GADBannerView()
+        
+        admobView = GADBannerView(adSize:kGADAdSizeBanner)
+        admobView.frame.origin = CGPoint(x:0, y:self.view.frame.size.height - admobView.frame.height)
+        admobView.frame.size = CGSize(width:self.view.frame.width, height:admobView.frame.height)
+        
+        if AdMobTest {
+            admobView.adUnitID = "ca-app-pub-9723884147061848/1352923088"
+        }
+        else{
+            admobView.adUnitID = AdMobID
+        }
+        
+        admobView.rootViewController = self
+        admobView.load(GADRequest())
+        
+        self.view.addSubview(admobView)
+        //ad用追加ここまで
     }
+    
+
     override func didReceiveMemoryWarning() {
         super.didReceiveMemoryWarning()
         // Dispose of any resources that can be recreated.
