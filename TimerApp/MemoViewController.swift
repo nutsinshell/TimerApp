@@ -41,7 +41,6 @@ class MemoViewController: UIViewController, UITextFieldDelegate,GADBannerViewDel
         
         print(maxTime)
         
-        //        maxTimeNotification.textColor = UIColor.gray
         maxTimeNotification.text = "所要時間は" + String(maxTime) + "分です"
         
         //    戻るボタンを消す

@@ -233,7 +233,7 @@ class InputViewController: UIViewController, UITableViewDelegate, UITableViewDat
             
             let naviController = segue.destination as! UINavigationController
             let memoViewController = naviController.viewControllers.first as! MemoViewController
-            //            segueでNaviControllerに行って、そのナビのrootvier（firstは最初に紐づけられたという意味）を参照する
+            // segueでNaviControllerに行って、そのナビのrootvier（firstは最初に紐づけられたという意味）を参照する
             
             memoViewController.memoTask = memoTask
             

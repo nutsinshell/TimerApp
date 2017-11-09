@@ -402,7 +402,7 @@
         <!--Timer View Controller-->
         <scene sceneID="phB-KD-2Pa">
             <objects>
-                <viewController id="W2m-fh-Bnz" customClass="TimerViewController" customModule="TimerApp" customModuleProvider="target" sceneMemberID="viewController">
+                <viewController storyboardIdentifier="TimerView" id="W2m-fh-Bnz" customClass="TimerViewController" customModule="TimerApp" customModuleProvider="target" sceneMemberID="viewController">
                     <layoutGuides>
                         <viewControllerLayoutGuide type="top" id="bFb-Dt-7A2"/>
                         <viewControllerLayoutGuide type="bottom" id="3u0-w6-Qv4"/>
@@ -414,7 +414,7 @@
                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="260" verticalHuggingPriority="260" text="タイトル" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="CMg-fZ-9p9">
                                 <rect key="frame" x="10" y="69" width="300" height="24"/>
                                 <fontDescription key="fontDescription" type="system" pointSize="20"/>
-                                <color key="textColor" red="0.40000000600000002" green="0.40000000600000002" blue="1" alpha="1" colorSpace="calibratedRGB"/>
+                                <color key="textColor" red="0.0" green="0.0" blue="1" alpha="1" colorSpace="calibratedRGB"/>
                                 <nil key="highlightedColor"/>
                                 <userDefinedRuntimeAttributes>
                                     <userDefinedRuntimeAttribute type="number" keyPath="cornerRadius">
@@ -493,7 +493,7 @@
                                 <rect key="frame" x="0.0" y="127" width="320" height="140"/>
                                 <subviews>
                                     <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="00:00:00" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" minimumFontSize="20" translatesAutoresizingMaskIntoConstraints="NO" id="lPl-rM-kls">
-                                        <rect key="frame" x="20" y="0.0" width="280" height="130"/>
+                                        <rect key="frame" x="0.0" y="0.0" width="320" height="130"/>
                                         <color key="backgroundColor" red="1" green="1" blue="1" alpha="1" colorSpace="calibratedRGB"/>
                                         <fontDescription key="fontDescription" type="system" weight="thin" pointSize="70"/>
                                         <color key="textColor" red="0.0" green="0.0" blue="1" alpha="1" colorSpace="calibratedRGB"/>
@@ -507,8 +507,8 @@
                                 </subviews>
                                 <color key="backgroundColor" red="1" green="1" blue="1" alpha="1" colorSpace="calibratedRGB"/>
                                 <constraints>
-                                    <constraint firstItem="lPl-rM-kls" firstAttribute="leading" secondItem="c2q-xt-Da3" secondAttribute="leading" constant="20" id="0rX-gU-ruf"/>
-                                    <constraint firstAttribute="trailing" secondItem="lPl-rM-kls" secondAttribute="trailing" constant="20" id="8aQ-7U-tv6"/>
+                                    <constraint firstItem="lPl-rM-kls" firstAttribute="leading" secondItem="c2q-xt-Da3" secondAttribute="leading" id="0rX-gU-ruf"/>
+                                    <constraint firstAttribute="trailing" secondItem="lPl-rM-kls" secondAttribute="trailing" id="8aQ-7U-tv6"/>
                                     <constraint firstAttribute="bottom" secondItem="lPl-rM-kls" secondAttribute="bottom" constant="10" id="GH0-sw-BUS"/>
                                     <constraint firstItem="lPl-rM-kls" firstAttribute="top" secondItem="c2q-xt-Da3" secondAttribute="top" id="Gyu-Qt-5xr"/>
                                     <constraint firstAttribute="height" constant="140" id="Wfc-bK-seu"/>
@@ -517,7 +517,7 @@
                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="260" verticalHuggingPriority="260" text="時間" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="jbX-hA-1vX">
                                 <rect key="frame" x="10" y="98" width="300" height="24"/>
                                 <fontDescription key="fontDescription" type="system" pointSize="20"/>
-                                <color key="textColor" red="0.40000000600000002" green="0.40000000600000002" blue="1" alpha="1" colorSpace="calibratedRGB"/>
+                                <color key="textColor" red="0.0" green="0.0" blue="1" alpha="1" colorSpace="calibratedRGB"/>
                                 <nil key="highlightedColor"/>
                             </label>
                             <textView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" editable="NO" text="ここにメモが表示されます" textAlignment="natural" selectable="NO" translatesAutoresizingMaskIntoConstraints="NO" id="oDA-4J-W2Y">

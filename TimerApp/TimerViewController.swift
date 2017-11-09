@@ -36,6 +36,9 @@ class TimerViewController: UIViewController,UITextFieldDelegate {
     //    メモの表示時間
     var index = 0
     
+    //AppDelegateで呼び出す用
+    //    let appDelegate = UIViewController()as? AppDelegate
+    
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -94,7 +97,32 @@ class TimerViewController: UIViewController,UITextFieldDelegate {
         }
     }
     
+    func restart() {
+        
+        let recorded = UserDefaults.standard.double(forKey: "backgroundTimeInterval")
+        
+        if recorded > 0 {
+            let duration = Date().timeIntervalSince1970 - recorded
+            
+            count += Float(duration)
+            startTimer(self)
+            print("\(duration/60)分経過")
+        }
+        
+        UserDefaults.standard.removeObject(forKey: "backgroundTimeInterval")
+    }
     
+    func pause(){
+        
+        if self.timer != nil {
+            // タイマーを破棄
+            self.timer.invalidate()      // 現在のタイマーを破棄する
+            self.timer = nil        // startTimer() の timer == nil で判断するために、 timer = nil としておく
+            let interval = Double(Date().timeIntervalSince1970)
+            //1970年から現在時刻までの差分を取得して定数inetervalに代入。アプリがBGに行った時の時間を定数intervalに入れる
+            UserDefaults.standard.set(interval, forKey: "backgroundTimeInterval")
+        }
+    }
     
     @IBAction func pauseTimer(_ sender: Any) {
         dismissKeyboard()
@@ -134,7 +162,7 @@ class TimerViewController: UIViewController,UITextFieldDelegate {
     func timerCounter(timer : Timer) {
         let hour = Int(count / 60 / 60)
         // fmod() 余りを計算
-//        let minute = Int(count / 60)
+        //        let minute = Int(count / 60)
         let minute = Int(count) % 3600 / 60
         // currentTime/60 の余り
         let second = Int(count) % 60
@@ -166,12 +194,12 @@ class TimerViewController: UIViewController,UITextFieldDelegate {
             if (newMinute > 1) &&  (minute == newMinute){
                 let newSecond = Int(Int(memoTime)! % 60)
                 memoTime = String(newSecond)
-            
-//            let newHour = Int(Int(memoTime)! / 60)
-//            if (newHour > 1) &&  (hour == newHour){
-//                let newminute = Int(Int(memoTime)! % 60)
-//                memoTime = String(newminute)
-            
+                
+                //            let newHour = Int(Int(memoTime)! / 60)
+                //            if (newHour > 1) &&  (hour == newHour){
+                //                let newminute = Int(Int(memoTime)! % 60)
+                //                memoTime = String(newminute)
+                
             }
             
         }
@@ -186,7 +214,9 @@ class TimerViewController: UIViewController,UITextFieldDelegate {
         count += 1      // カウントの値1増加
         
         if Int(count) > Int(timeStr * 60) {
-            timerLabel.backgroundColor = UIColor(red: 1.0, green: 0.8, blue: 1.0, alpha:1.0)
+            timerLabel.backgroundColor = UIColor.black
+            timerLabel.textColor = UIColor.white
+            
         }
         
     }
